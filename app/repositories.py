@@ -8,6 +8,10 @@ from .config import settings
 
 
 class BaseRepository:
+    """
+    Базовый класс для репозиториев пользователей.
+    Определяет общие методы для создания, получения, обновления, удаления и списка пользователей.
+    """
     def create(self, full_name: str):
         raise NotImplementedError
 
@@ -25,6 +29,10 @@ class BaseRepository:
 
 
 class ORMRepository(BaseRepository):
+    """
+    Реализация репозитория с использованием SQLAlchemy ORM и базы данных PostgreSQL.
+    Предоставляет методы для взаимодействия с моделью User в базе данных.
+    """
     def __init__(self, db: Session):
         self.db = db
 
@@ -59,6 +67,10 @@ class ORMRepository(BaseRepository):
 
 
 class RedisRepository(BaseRepository):
+    """
+    Реализация репозитория с использованием Redis.
+    Предоставляет методы для хранения и получения данных пользователей в Redis.
+    """
     def __init__(self, redis_client):
         self.redis = redis_client
         self.counter = 0
@@ -92,6 +104,10 @@ class RedisRepository(BaseRepository):
 
 
 def get_repository(db: Session = None):
+    """
+    Фабричная функция для создания соответствующего репозитория на основе настроек.
+    Возвращает экземпляр ORMRepository или RedisRepository.
+    """
     if settings.REPOSITORY_TYPE == 'orm':
         return ORMRepository(db)
     elif settings.REPOSITORY_TYPE == 'redis':
